@@ -2,16 +2,14 @@
   <sectiontype name="websocket-server"
                datatype=".WebSocketServerFactory"
                implements="ZServer.server">
-     <key name="port" datatype="integer">
+     <key name="host" datatype="string">
        <description>
+       Zope hostname (when dispatching requests for ZPublisher).
        </description>
      </key>
-     <key name="hostname" datatype="string">
+     <key name="port" datatype="integer" default="8081">
        <description>
-       </description>
-     </key>
-     <key name="method" datatype="string">
-       <description>
+       WebSocket server port.
        </description>
      </key>
   </sectiontype>

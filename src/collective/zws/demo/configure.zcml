@@ -1,0 +1,27 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser">
+
+    <browser:page
+        name="websocket-demo"
+        for="*"
+        template="templates/demo.pt"
+        permission="zope2.View"
+        />
+
+    <browser:page
+        name="websocket-echo"
+        for="*"
+        layer="collective.zws.interfaces.IWebSocketLayer"
+        class=".demo.Echo"
+        permission="zope2.View"
+        />
+
+    <browser:page
+        name="websocket-whoami"
+        for="*"
+        layer="collective.zws.interfaces.IWebSocketLayer"
+        class=".demo.WhoAmI"
+        permission="zope2.View"
+        />
+
+</configure>

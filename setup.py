@@ -15,7 +15,7 @@ setup(
     author="Asko Soukka",
     author_email="asko.soukka@iki.fi",
     url="https://github.com/datakurre/collective.zws/",
-    license="BSD",
+    license="GPL",
     packages=find_packages("src", exclude=["ez_setup"]),
     package_dir={"": "src"},
     namespace_packages=["collective"],

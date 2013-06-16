@@ -10,17 +10,25 @@
 <metal:content-core fill-slot="content-core">
     <metal:content-core define-macro="content-core">
 
-    <input type="text" size="40" id="input" /> <button id="sendBtn">Send</button>
+    <input type="text" size="40" id="input" />
+    <button id="sendEcho">Echo</button>
+    <button id="sendWhoAmI">Who am I?</button>
     <div id="messages"></div>
     <script>
     $(document).ready(function() {
-        var ws = new WebSocket('ws://localhost:8081');
-        ws.onmessage = function(e) {
+        var echo = new WebSocket('ws://localhost:8081/Plone/@@websocket-echo');
+        var whoami = new WebSocket('ws://localhost:8081/Plone/@@websocket-whoami');
+
+        echo.onmessage = whoami.onmessage = function(e) {
             $('#messages').append('<p>' + e.data + '</p>');
         };
-        $('#sendBtn').click(function() {
-            ws.send($('#input').val());
+
+        $('#sendEcho').click(function() {
+            echo.send($('#input').val());
             $('#input').val('');
+        });
+        $('#sendWhoAmI').click(function() {
+            whoami.send('foobar');
         });
     });
     </script>

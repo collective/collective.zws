@@ -2,6 +2,7 @@
 
 # http://www.cs.rpi.edu/~goldsd/docs/spring2012-csci4220/websocket-py.txt
 
+import re
 import asyncore
 import socket
 import struct
@@ -62,7 +63,15 @@ class WebSocketConnection(asyncore.dispatcher_with_send):
             headers["Location"] = "ws://" + headers["Host"] + path
 
             self.readystate = "open"
-            self.handler = self.server.handlers.get(path, None)(self)
+            # exact match
+            if path in self.server.handlers:
+                self.handler = self.server.handlers.get(path)(self)
+            # or the nearest wild card match
+            elif [s for s in self.server.handlers if re.match(s, path)]:
+                self.handler = self.server.handlers.get(
+                    sorted([s for s in self.server.handlers
+                            if re.match(s, path)])[-1]
+                )(self, path)
 
             # TODO: Save all data required for later calls:
             self.cookie = headers.get("Cookie", "")

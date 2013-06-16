@@ -15,13 +15,11 @@ class WebSocketServerFactory(object):
 
     def __init__(self, section):
         self.port = section.port
-        self.hostname = section.hostname
-        self.method = section.method
+        self.hostheader = section.host
+        self.host = None  # appease configuration machinery
 
-        # Just in case, mimic ZServer.datatypes.ServerFactory
-        self.ip = self.host = self.port
-
-        Lifetime.lifetime_loop = lifetime_loop  # override lifetime_loop
+        # Override lifetime_loop for shorter asyncore loop poll timeout
+        Lifetime.lifetime_loop = lifetime_loop
 
     def prepare(self, defaulthost='', dnsresolver=None,
                 module=None, env=None, portbase=None):
@@ -33,7 +31,4 @@ class WebSocketServerFactory(object):
     def create(self):
         from collective.zws.server import WebSocketServer
         from ZServer.AccessLogger import access_logger
-        return WebSocketServer(self.port,
-                               self.hostname,
-                               self.method,
-                               access_logger)
+        return WebSocketServer(self.port, self.hostheader, access_logger)

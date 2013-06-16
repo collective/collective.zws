@@ -25,16 +25,37 @@ from ZServer.PubCore import handle
 from ZServer.HTTPResponse import make_response
 from ZPublisher.HTTPRequest import HTTPRequest
 
-from zope.interface import (
-    implements,
-    Interface
-)
+from zope.interface import implements
 
+from collective.zws.interfaces import IWebSocketLayer
 from collective.zws import websocket
 
 
-class IWebSocketRequest(Interface):
-    pass
+class WebSocketServer(object):
+
+    def __init__(self, port, host=None, logger=None, handler=None):
+        h = self.headers = []
+        h.append('User-Agent: WebSocket Server')
+        h.append('Accept: text/html,text/plain')
+        if host:
+            h.append('Host: %s' % host)
+        else:
+            h.append('Host: %s' % socket.gethostname())
+
+        if handler is None:
+            handler = handle
+        self.zhandler = handler
+
+        self.server = websocket.WebSocketServer(
+            port, handlers={'/.*': self.handler_factory}
+        )
+
+    def handler_factory(self, conn, path):
+        return WebSocketHandler(self, conn, path)
+
+
+class WebSocketRequest(HTTPRequest):
+    implements(IWebSocketLayer)
 
 
 class WebSocketChannel(object):
@@ -59,13 +80,12 @@ class WebSocketChannel(object):
         pass
 
 
-class WebSocketRequest(HTTPRequest):
-    implements(IWebSocketRequest)
+class WebSocketHandler(object):
 
+    # required by ZServer
+    SERVER_IDENT = 'WebSocket'
 
-class WebSocketServer(object):
-
-    # request environment base
+    # request environment defaults
     _ENV = dict(REQUEST_METHOD='GET',
                 SERVER_PORT='WebSocket',
                 SERVER_NAME='WebSocket Server',
@@ -75,36 +95,17 @@ class WebSocketServer(object):
                 GATEWAY_INTERFACE='CGI/1.1',
                 REMOTE_ADDR='0')
 
-    # required by ZServer
-    SERVER_IDENT = 'WEBSOCKET'
-
-    def __init__(self, port, hostname, method, logger=None, handler=None):
-
-        if hostname:
-            self.hostname = hostname
-        else:
-            self.hostname = hostname = socket.gethostname()
+    def __init__(self, server, conn, method=None):
+        self.server = server
+        self.conn = conn
         self.method = method
-
-        self.server = websocket.WebSocketServer(
-            port, handlers={'/': self.handler_factory}
-        )
-
-        h = self.headers = []
-        h.append('User-Agent: WebSocket Server')
-        h.append('Accept: text/html,text/plain')
-        h.append('Host: %s' % hostname)
-
-        if handler is None:
-            handler = handle
-        self.zhandler = handler
 
     def get_requests_and_response(self, conn, data):
         out = StringIO.StringIO()
         s_req = '%s %s HTTP/%s' % ('GET', self.method, '1.0')
         req = http_request(WebSocketChannel(self, conn), s_req,
                            'GET', self.method,
-                           '1.0', self.headers)
+                           '1.0', self.server.headers)
         env = self.get_env(req)
         resp = make_response(req, env)
         env['HTTP_COOKIE'] = conn.cookie
@@ -141,19 +142,6 @@ class WebSocketServer(object):
 
         return env
 
-    def handler_factory(self, conn):
-        return WebSocketHandler(self, conn)
-
-    def handle(self, conn, data):
-        req, zreq, resp = self.get_requests_and_response(conn, data)
-        self.zhandler('Zope2', zreq, resp)
-
-
-class WebSocketHandler(object):
-
-    def __init__(self, server, conn):
-        self.server = server
-        self.conn = conn
-
     def dispatch(self, data):
-        self.server.handle(self.conn, data)
+        req, zreq, resp = self.get_requests_and_response(self.conn, data)
+        self.server.zhandler('Zope2', zreq, resp)
