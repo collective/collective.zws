@@ -23,6 +23,22 @@ class WebSocketConnection(asyncore.dispatcher_with_send):
         self.readystate = "connecting"
         self.buffer = ""
 
+        import zmq
+        context = zmq.Context()
+        sub = context.socket(zmq.SUB)
+        sub.connect("tcp://localhost:6000")
+        sub.setsockopt(zmq.SUBSCRIBE, "public")
+        self.zmq_socket = sub
+
+    def writable(self):
+        import zmq
+        try:
+            data = self.zmq_socket.recv(flags=zmq.NOBLOCK)
+            self.send(unicode(data, "utf-8", "ignore"))
+        except zmq.ZMQError:
+            pass
+        return asyncore.dispatcher_with_send.writable(self)
+
     def handle_read(self):
         data = self.recv(1024)
         self.buffer += data

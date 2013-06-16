@@ -24,4 +24,9 @@
         permission="zope2.View"
         />
 
+    <subscriber
+        for="Products.PlonePAS.events.UserLoggedInEvent"
+        handler=".demo.notifyLoggedInEvent"
+        />
+
 </configure>

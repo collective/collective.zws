@@ -17,3 +17,14 @@ class WhoAmI(BrowserView):
         if not mtool.isAnonymousUser():
             user_id = mtool.getAuthenticatedMember().getId()
         return user_id
+
+
+def notifyLoggedInEvent(event):
+    import zmq
+    import time
+    context = zmq.Context()
+    pub = context.socket(zmq.PUB)
+    pub.bind("tcp://*:6000")
+    time.sleep(0.1)  # Why message is dropped without this?
+    pub.send("public %s logged in" % str(event.object.getId()))
+    pub.close()
