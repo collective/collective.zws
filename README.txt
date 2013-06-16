@@ -1,3 +1,10 @@
+collective.zws
+==============
+
+Experimental (asyncore) WebSocket server integration for Zope2. Server is
+started into the same asyncore loop with Zope2 (and Plone) and each websocket
+request is handled via ZPublisher similarly to regular HTTP-requests.
+
 1. ::
 
     $ python bootstrap.py
