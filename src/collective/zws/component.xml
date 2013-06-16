@@ -1,0 +1,18 @@
+<component prefix="collective.zws.datatypes">
+  <sectiontype name="websocket-server"
+               datatype=".WebSocketServerFactory"
+               implements="ZServer.server">
+     <key name="port" datatype="integer">
+       <description>
+       </description>
+     </key>
+     <key name="hostname" datatype="string">
+       <description>
+       </description>
+     </key>
+     <key name="method" datatype="string">
+       <description>
+       </description>
+     </key>
+  </sectiontype>
+</component>
