@@ -11,6 +11,7 @@
     <browser:page
         name="websocket"
         for="*"
+        layer="..server.IWebSocketRequest"
         class=".websocket.WebSocketRoot"
         permission="zope2.View"
         />
