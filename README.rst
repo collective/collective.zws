@@ -13,7 +13,7 @@ should implemetn that layer.
 Trying out
 ----------
 
-1. Buildout and start Plone
+1. Buildout and start Plone::
 
     $ python bootstrap.py
     $ bin/buildout
