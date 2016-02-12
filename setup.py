@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="collective.zws",
-    version="1.0.0",
+    version="1.1.0",
     description="",
     long_description=(open("README.rst").read() + "\n" +
                       open("CHANGES.txt").read()),
@@ -23,6 +23,7 @@ setup(
     zip_safe=False,
     install_requires=[
         "setuptools",
+        "asyncorews"
     ],
     extras_require={"test": [
         "plone.app.testing",
