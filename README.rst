@@ -23,9 +23,6 @@ Trying out
 
 3. Open http://localhost:8080/Plone/@@websocket-demo
 
-Asyncore-based websocket-server is forked from (license is still unclear):
-http://www.cs.rpi.edu/~goldsd/docs/spring2012-csci4220/websocket-py.txt
-
 Tested to work with Firefox and Chrome. Unresolved handshaking issues
 with Safari.
 
