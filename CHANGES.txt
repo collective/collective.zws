@@ -1,4 +1,4 @@
-1.1.0 (12.2. 2016)
+1.0.0 (26.2. 2016)
 -------------------
 
-- switch to factored-out websocket implementation ("asyncorews")
+- initial release

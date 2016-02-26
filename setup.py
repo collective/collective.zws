@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="collective.zws",
-    version="1.1.0",
+    version="1.0.0",
     description="",
     long_description=(open("README.rst").read() + "\n" +
                       open("CHANGES.txt").read()),
