@@ -23,6 +23,7 @@ setup(
     zip_safe=False,
     install_requires=[
         "setuptools",
+        "asyncorews"
     ],
     extras_require={"test": [
         "plone.app.testing",

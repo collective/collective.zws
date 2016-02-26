@@ -28,7 +28,7 @@ from ZPublisher.HTTPRequest import HTTPRequest
 from zope.interface import implements
 
 from collective.zws.interfaces import IWebSocketLayer
-from collective.zws import websocket
+from asyncorews import websocket
 
 
 class WebSocketServer(object):
